@@ -24,7 +24,7 @@
 可以先装一个 nvm，使用`nvm install` 安装；下面介绍一种去[官网](https://nodejs.org/en/download/)下载最新版的 nodejs 版本的方法：
 因为和一般的 PC（x86 和 x64 架构）不同，树莓派的 CPU 是 ARM 架构，所以，要下载对应的 Nodejs 二进制文件。
 下图提供了，不同的树莓派版本对应的不同的下载版本；
-![树莓派下载Nodejs](https://upload-images.jianshu.io/upload_images/3396239-bae8e9232483284f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![树莓派下载Nodejs](https://raw.githubusercontent.com/XiangnianZhou/blog/master/jianshu/images/3396239-bae8e9232483284f.png)
 
 找到对应的版本之后，可以直接使用浏览器下载，也可以复制下载链接使用`wget` 指令下载；然后对下载下来的 node-xx.tar.gz 执行如下命令：
 
