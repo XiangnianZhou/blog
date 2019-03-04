@@ -45,18 +45,38 @@ npm init
 ```
 
 安装依赖库：
-可能用到的第三方库有： `onoff` 和 `raspi-pwm`， 具体用法可以自行 google
+用到了第三方库 `onoff`， 它可以让 Nodejs 在访问树莓派的 GPIO。更多玩法请看[这里](https://github.com/fivdi/onoff)。
 
 ```
-npm install onoff  raspi-pwm --save
+npm install onoff --save
 ```
 
-### 硬件连接
+### 硬件连接和调试
 
 因为在某宝很容易买到树莓派或者 Arduino 的模块，而且也很便宜，推荐直接购买模块。
-本次的项目中用到的光敏电阻模块，红外接收模块，红外发射模块和蜂鸣器模块都是比较简单的模块，没有只有三个引脚，分别对应 VCC，GND 和输入/输出引脚。链接方法不做过多解释。
+本次的项目中用到的光敏电阻模块，红外接收模块，红外发射模块和蜂鸣器模块都是比较简单的模块，只有三个引脚，分别对应 VCC，GND 和输入/输出引脚。链接方法不做过多解释。
 
 准备工作做完后，来开始撸代码了。
+
+#### 蜂鸣器
+
+我这里蜂鸣器连接的是 `GPIO22`，蜂鸣器为**高电平触发的有源蜂鸣器**，所以给 `GPIO22` 置高电平就可以，代码如下：
+
+```javascript
+const Gpio = require('onoff').Gpio;
+const beep = new Gpio(22, 'out');
+
+const beepOn = () => {
+    beep.writeSync(1);
+    setTimeout(() => {
+        beep.writeSync(0);
+    }, 350);
+};
+
+beepOn();
+```
+
+保存并运行脚本 `node index.js`, 听见蜂鸣器“哔~”的一声。
 
 ## 提醒睡觉
 
