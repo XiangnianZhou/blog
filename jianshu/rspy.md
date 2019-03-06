@@ -94,13 +94,59 @@ console.log(lightInput.readSync());
 
 #### 红外遥控信号的解码与编码
 
-这个问题听起来很高大上，但是如果去百度搜索 `树莓派红外遥控`，会发现大量介绍如何使用树莓派进行编解码的文章。其原理是，通过**lirc 软件**，在 Linux 上实现红外发送与接收。
+这个问题听起来很高大上，但是如果去百度搜索 `树莓派红外遥控`相关内容，会发现大量介绍如何使用树莓派进行编解码的文章。其原理是，通过**lirc 软件**，在 Linux 上实现红外发送与接收。
 下面列出我参考的几篇文章：
 
 -   [一篇 github 上的文章](https://gist.github.com/prasanthj/c15a5298eb682bde34961c322c95378b)
 -   [一篇关于 NEC 协议的文章](http://www.cnblogs.com/yulongchen/archive/2013/04/12/3017409.html)
 -   [使用树莓派红外控制空调和风扇](https://linux.cn/article-3782-1.html)
 -   [树莓派学习手记](https://segmentfault.com/a/1190000014135418)
+
+硬件连接：
+红外接收模块的，I/O 引脚接树莓派 `GPIO17`, 红外接收模块的信号引脚接树莓派的 `GPIO18`。
+
+安装：
+
+```
+$ sudo apt-get update
+$ sudo apt-get install lirc
+```
+
+打开 `/etc/modules` 文件：
+
+```
+sudo leafpad /etc/modules
+```
+
+然后添加如下代码，并保存退出：
+
+```
+lirc_dev
+lirc_rpi gpio_in_pin=18 gpio_out_pin=17
+```
+
+打开 `/etc/lirc/hardware.conf` 文件：
+
+```
+sudo leafpad  /etc/lirc/hardware.conf
+```
+
+添加如下代码，并保存退出：
+
+```
+LIRCD_ARGS="--uinput --listen"
+LOAD_MODULES=true
+DRIVER="default"
+DEVICE="/dev/lirc0"
+MODULES="lirc_rpi"
+```
+
+编辑 `/etc/lirc/lirc_options.conf` 文件：
+
+```
+driver    = default
+device    = /dev/lirc0
+```
 
 ## 提醒睡觉
 
