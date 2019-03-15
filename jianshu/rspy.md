@@ -148,6 +148,45 @@ driver    = default
 device    = /dev/lirc0
 ```
 
+正常情况现在就可以重启了。
+
+LIRC 软件的常用命令：
+
+```
+# 启动
+sudo /etc/init.d/lircd start
+
+# 停止
+sudo /etc/init.d/lircd stop
+
+# 重启
+sudo /etc/init.d/lircd restart
+
+# 查看状态
+sudo /etc/init.d/lircd status
+```
+
+#### 红外信号录制
+
+```
+sudo /etc/init.d/lircd stop
+
+mode2 -d /dev/lirc0
+```
+
+输出一坨类似下面的东东：
+
+```
+space 16777215
+pulse 8999
+space 4457
+pulse 680
+space 1627
+......
+```
+
+其实，这就是遥控器发出的信号了
+
 ## 提醒睡觉
 
 原理： 晚上 22:30 分之后，用光敏模块检测光线强度（模块输出开关量，调节电位器到一个合适的位置，使其在关灯状态和开灯状态输出不同的信号）， 如果卧室开着灯，每隔 10 分钟就触发蜂鸣器。
