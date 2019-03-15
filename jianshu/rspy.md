@@ -166,7 +166,7 @@ sudo /etc/init.d/lircd restart
 sudo /etc/init.d/lircd status
 ```
 
-#### 红外信号录制
+测试红外接收：
 
 ```
 sudo /etc/init.d/lircd stop
@@ -185,7 +185,28 @@ space 1627
 ......
 ```
 
-其实，这就是遥控器发出的信号了
+其实，这就是遥控器发出的信号了， 结合这里的 [ NEC 协议](http://www.cnblogs.com/yulongchen/archive/2013/04/12/3017409.html)，我们就能猜到，这其实就是红外信号脉冲(pulse)和空白(space)的持续时间。
+
+录入红外信号：
+
+```
+sudo /etc/init.d/lircd stop
+
+sudo irrecord -d /dev/lirc0 ~/lircd.conf
+```
+
+一般来讲，按提示一步一步进行就行。不过这里需要注意的是，这种方式，每个键的名字，必须在 lirc 规定的命名空间里。
+使用下面指令查看命名空间：
+
+```
+irrecord -l --list-namespace
+```
+
+因为我看见遥控器上有【亮度+】 和 【亮度-】 这些按键，从命名空间里找一个合适的名字也很麻烦于是我决定使用 raw 模式录制，更加的灵活和方便。
+
+```
+irrecord -f -d /dev/lirc0 ~/light_row.conf
+```
 
 ## 提醒睡觉
 
