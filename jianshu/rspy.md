@@ -192,21 +192,48 @@ space 1627
 ```
 sudo /etc/init.d/lircd stop
 
-sudo irrecord -d /dev/lirc0 ~/lircd.conf
+sudo irrecord -d /dev/lirc0
 ```
 
-一般来讲，按提示一步一步进行就行。不过这里需要注意的是，这种方式，每个键的名字，必须在 lirc 规定的命名空间里。
+一般来讲，按提示一步一步进行就行。不过这里需要注意的是，这种方式，每个按键的名字，必须使用 lirc 的命名空间内规定的名字。
+
 使用下面指令查看命名空间：
 
 ```
 irrecord -l --list-namespace
 ```
 
-因为我看见遥控器上有【亮度+】 和 【亮度-】 这些按键，从命名空间里找一个合适的名字也很麻烦于是我决定使用 raw 模式录制，更加的灵活和方便。
+因为我看见遥控器上有【亮度+】 和 【亮度-】 这些按键，从命名空间里找一个合适的名字也很麻烦，所以要使用 `--disable-namespace` 参数，表示不使用 lirc 的命名空间。
 
 ```
-irrecord -f -d /dev/lirc0 ~/light_row.conf
+irrecord -d /dev/lirc0 --disable-namespace
 ```
+
+如果遥控是有“状态”的，可以使用 row 模式录入信号：
+
+```
+# 参数-f --force 表示 Force raw mode
+irrecord -f -d /dev/lirc0 --disable-namespace
+```
+
+我发现，这种模式对于简单的遥控的录入也很友好。
+我录入好的文件，[在这里](https://github.com/XiangnianZhou/rpi-alarm/blob/master/attach/light.row.lircd.conf)
+
+测试一下录入的信号能不能用：
+
+```
+# 复制刚才录入的配置文件到/etc/lirc下
+sudo cp ~/light.row.lircd.conf /etc/lirc/lircd.conf
+
+# 启动lirc
+sudo /etc/init.d/lircd start
+
+# 发送
+# irsend SEND_ONCE <device-name> <key-name>
+irsend SEND_ONCE light on
+```
+
+将红外发射管对着要控制的灯的接收器， 执行上面 `irsend` 命令，发现灯会被打开，到此红外遥控信号的录入与发送都已经完成。
 
 ## 提醒睡觉
 
