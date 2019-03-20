@@ -235,6 +235,47 @@ irsend SEND_ONCE light on
 
 将红外发射管对着要控制的灯的接收器， 执行上面 `irsend` 命令，发现灯会被打开，到此红外遥控信号的录入与发送都已经完成。
 
+### Nodejs 部分
+
+beep.js 驱动蜂鸣器的脚本，原理很简单，给高电平它就会响，给低电平就不响了，我想要的是 “哔-哔-哔---哔-哔-哔---” 的效果，于是每个循环单元，需要给 GPIO 三次置高电平。代码如下：
+
+```JavaScript
+const Gpio = require('onoff').Gpio;
+const beepGpio = new Gpio(22, 'out');
+
+function beepOn(minutes) {
+    const ms = minutes * 60 * 1000;
+    const beep = () => beepGpio.writeSync(1);
+    const space = () => beepGpio.writeSync(0);
+
+    // 每一个beepUnit，是一个 哔-哔-哔--
+    const beepUnit = () => {
+        beep();
+        setTimeout(space, 150);
+        setTimeout(beep, 180);
+        setTimeout(space, 320);
+        setTimeout(beep, 350);
+        setTimeout(space, 480);
+    };
+
+    beepUnit();
+    const beepTimer = setInterval(beepUnit, 1000);
+    setTimeout(() => {
+        clearInterval(beepTimer);
+        space();
+    }, ms);
+}
+```
+
+测试一下：
+
+```JavaScript
+const beep = require('./beep');
+beep(0.1);
+```
+
+执行以上代码，出现了六次“哔-哔-哔--”。
+
 ## 提醒睡觉
 
 原理： 晚上 22:30 分之后，用光敏模块检测光线强度（模块输出开关量，调节电位器到一个合适的位置，使其在关灯状态和开灯状态输出不同的信号）， 如果卧室开着灯，每隔 10 分钟就触发蜂鸣器。
