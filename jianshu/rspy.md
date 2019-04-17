@@ -246,8 +246,11 @@ irsend SEND_ONCE light on
 
 ### 项目结构
 
-下面是一张简单的系统结构图：
-主要分为两个大的模块，
+下面是一张简单的系统结构图示：
+
+![简单的系统结构图](https://raw.githubusercontent.com/XiangnianZhou/blog/master/jianshu/images/mind.png)
+
+主要分为两个大的模块：
 
 -   server 模块，服务器模块，设置闹钟时间的所需的页面、接口都在这个模块里实现。
 -   alerm 模块，闹钟模块，蜂鸣器、红外遥控、光敏电阻传感器的驱动程序都在这个模块里实现。
@@ -338,6 +341,8 @@ module.exports = {
 `server.js`, nodejs 服务器，用来接收用户 设置。
 
 ### setting.html
+
+![设置页面](https://raw.githubusercontent.com/XiangnianZhou/blog/master/jianshu/images/interface.jpg)
 
 `setting.html`, 给用户用来设置闹铃的页面代码。
 
