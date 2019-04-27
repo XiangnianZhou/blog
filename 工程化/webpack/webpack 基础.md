@@ -3,11 +3,11 @@
 ### 关于本文
 
 最近有机会系统地总结一下 webpack 相关的东西，写篇文章来记录一下。写这篇文章一半是为了自己看，一半给别人看。如果有人看了这篇文章感觉很有用，真是我莫大的荣幸。
-首先这**不是** 《深入浅出 webpack》， 也**不是**《一篇文章带你玩转 webpack》，更**不是** 《学习 webpack 这一篇就够了》。如果你想通过一篇文章就弄懂 webpack，这里不适合你。
+首先这**不是** 《深入浅出 webpack》， 也**不是**《一篇文章带你玩转 webpack》，更**不是** 《学习 webpack 这一篇就够了》。
 
 ### 如何学 webpack
 
-**看文档**是最简单，最直接的方法，不过官方文档有些地方写的不太清楚，这时候，那些文章和博客的作用就比较明显了，毕竟这些是文章的作者们摸索出来的。比如这篇文章没有大篇幅复制官方文档，而是力求多介绍些没有在文档中体现的部分。
+**看文档**是最简单，最直接的方法，不过官方文档有些地方写的不太清楚，这时候，那些文章和博客的作用就比较明显了，毕竟这些是文章的作者们摸索出来的。比如这篇文章没有大篇幅复制官方文档，而是力求多介绍些没有在文档中没体现的部分。
 
 ### 关于 webpack
 
@@ -311,6 +311,7 @@ modules: [path.resolve(__dirname, 'node_modules')]
 
 例子：[官方提供的例子](https://github.com/webpack/webpack/tree/master/examples/dll)
 
+
 #### 其他玩法
 
 -   可以打包出多个动态链接库。
@@ -368,11 +369,6 @@ webpack 在生产环境的提取公共代码策略和以下因素有关：
 更多细节请移步[官方文档](https://webpack.js.org/plugins/split-chunks-plugin/)
 
 我们在做公共代码的提取相关配置的时候，也是从上面的几个角度去配置的。
-<del>比如要在一个单页应用中，打包抽离出第三方模块和公共业务代码:</del>
-
-```JavaScript
-// 此处缺一坨代码
-```
 
 ### 按需加载
 
@@ -403,3 +399,54 @@ import(/* webpackChunkName: "print" */ './print').then(module => {
 
 -   webpack4 与 webpack3 的 `import()`，对 CommonJS 模块处理方式不太一样；
 -   webpack4 开始， `import()` 时，解析的都是一个命名空间对象了。
+
+
+### CND 加速
+把静态资源上传到CDN服务上，能获得更快的响应速度。由于 CDN 服务一般会为资源开启很长时间的缓存，所以HTML文件一般不放到 CND 上，而且关闭缓存。而对于静态的JavaScript、CSS、图片等文件传到 CDN 上，同时为文件名带上由**文件内容** 计算出的 hash 指纹。
+
+另外浏览器在同一时刻对同一域名的并行请求有限制，一般的解决方案是：把这些静态资源分散到不同域名下的CDN服务上，如：JavaScript文件放到 js.cdn.xx.com 域名下，图片放到 img.cdn.xx.com 域名下。
+
+ > 同时多个域名又会增加域名解析的成本，这个也需要权衡。当然也可以通过也可以在HTML的head 标签中，增加 `<link rel="dns-prefetch" href="//js.cdn.xx.com" />` 预解析域名，以减少域名解析带来的延迟。
+
+配置：
+- 在 `output.publicPath` 设置 JavaScript 的基地址。
+- MiniCssExtractPlugin.loader 通过 `publicPath` 设置 CSS 的基地址。
+- file-loader/url-loader 通过 `publicPath` 设置图片等文件的的基地址。
+
+文件 hash 指纹在利用浏览器缓存中发挥了很重要的作用，在 webpack 中可用的 hash 的类型有 hash, chunkhash 和 contenthash，下面简要介绍其主要区别。
+
+#### hash, chunkhash 和 contenthash
+- hash，由编译过程中的 compilation 对象计算得到的 hash，可以理解是**整个项目的 hash 值**，项目中任何文件改变都会造成 hash 不同。
+- chunkhash 是根据 chunk 内容计算得到的 hash，对于每个 chunk 来说，如果该 chunk 代码不变，那么 hash 也将保持不变。
+- contenthash，非webpack提供，而是由 ExtractTextplugin 和 MiniCssExtractPlugin 这些动态创建 chunk 的插件提供。是由抽离出的文件的内容计算得到的 hash。
+
+
+### tree-shaking
+用来消除死码。webpack 在生产环境，已经默认开启了 tree-shaking，注意，为了发挥tree-shaking 的作用，项目中必需使用 ES6 的模块引用和导出规则。
+
+CSS 的 “tree-shaking” 可以通过 [optimize-css-assets-webpack-plugin](https://github.com/NMFR/optimize-css-assets-webpack-plugin) 实现。
+
+### Scope Hoisting
+Scope Hoisting 可以让 Webpack 打包出来的代码文件更小、运行的更快；webpack默认在生产模式已经开启 Scope Hoisting。
+
+大概的原理：
+早期的 webpack 模块打包，把模块打包到一个个作用域隔离的函数中，然后把这些函数表达式放到一个数组里，作为参数传递给 webpack 运行时模块解析的函数。其中运行这些函数创建了大量作用域，增加了内存开销。
+**ModuleConcatenationPlugin** （webpack内置实现Scope Hoisting的插件）通过分析出模块之间的依赖关系，可以将一个模块以内联函数的形式注入到另一个模块。
+
+> 注意，此插件仅适用于由 webpack 直接处理的 ES6 模块)。在使用转译器(transpiler)时，你需要禁用对模块的处理（例如 Babel 中的 modules 选项）。
+
+[了解更多](https://medium.com/webpack/brief-introduction-to-scope-hoisting-in-webpack-8435084c171f)
+
+### happyPack
+happyPack 可以实现多进程并发处理 loader 解析。
+随着 webpack 性能的提升，happyPack 会被逐渐淘汰。
+
+> ### Is it necessary for Webpack 4?
+> Short answer: *maybe* not.
+>
+> Long answer: there's now a competing add-on in the form of a _loader_ for processing files in multiple threads, exactly what HappyPack does. The fact that it's a loader and not a plugin (or both, in case of H.P.) makes it much simpler to configure. Look at [thread-loader](https://github.com/webpack-contrib/thread-loader) and if it works for you - that's great, otherwise you can try HappyPack and see which fares better for you.
+>
+> 以上引自 [happypack](https://github.com/amireh/happypack) GitHub 的 FAQ。
+
+现在可以尝试使用 webpack 提供的 thread-loader， 配置也很简单。
+
