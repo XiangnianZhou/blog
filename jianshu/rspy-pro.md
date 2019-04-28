@@ -5,7 +5,7 @@
 
 获取播放列表：
 
-https://www.ximalaya.com/revision/play/album?albumId=22689810&pageNum=1&sort=-1&pageSize=5
+https://www.ximalaya.com/revision/play/album?albumId=22689810&pageNum=1&sort=-1&pageSize=1
 
 
 接口数据如下：
