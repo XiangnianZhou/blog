@@ -3,3 +3,8 @@
 - 具体语法树，包含完整的源代码字符串信息。
 - 相对源码，抽象语法树省略了部分信息，比如一些辅助符号。
 - 一般的，在源代码的翻译和编译过程中，语法分析器创建出分析树，然后从分析树生成抽象语法树。
+
+参考;
+- [V8 引擎本用了什么编译技术](https://www.zhihu.com/question/19721167)
+- [认识V8](https://zhuanlan.zhihu.com/p/27628685)
+- [js](https://cheogo.github.io/learn-javascript/201709/runtime.html)
