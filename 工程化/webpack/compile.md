@@ -1,4 +1,4 @@
-## 工作原理
+# 工作原理
 webpack 基本的功能就是根据输入，进行编译输出。总体分为大体可以分为三个阶段： 
 初始化 --> 编译 --> 输出，更具体的步骤如下：
 
@@ -17,21 +17,63 @@ webpack 基本的功能就是根据输入，进行编译输出。总体分为大
 
 大概原理如上，我们心里先有个底，接下来我们根据源码逐步解析一下。
 
+## 整体流程
+首先我们跟着程序执行的脚步，来一探究竟。
 
-webpack 提供了一系列的生命周期钩子以便注册插件。在每个生命周期节点, webpack 会待用相应已注册的插件,并提供当前 webpack 编译状态信息。 
+从终端输入 `npm run webpack` 或 `npx webpack` 开始：
+首先，从 `node_modules/.bin` 目录的 webpack 文件开始使用 node 调用 `node_modules/webpack/bin/webpack.js` 文件， 从此 webpack 和 webpack-cli 便开始运行了。
+
+
+**webpack/bin/webpack.js：**
+这里先有一波对 webpack/webpack-cli 安装判断，最后调用 `webpack-cli/bin/cli.js`。
+
+**webpack-cli/bin/cli.js：**
+1. 合并配置文件和命令行参数的配置（调用webpack-cli/utils/convert-argv.js）。
+2. 调用 `webpack/lib/webpack.js`， 此文件导出一个 `webpack()` 函数； 执行这个函数得到 compiler 对象； 最后执行 `compiler.run()` 方法。
+3. 最后在 `compiler.run()` 的回调中执行 `compiler.emitAssets()` 方法，根据 output 配置，输出文件。
+
+到这里我们可以知道， webpack 的流程可以分为三个阶段： **初始化、编译和输出**。要高清楚如何编译，就得搞明白 `webpack/lib/webpack.js` 导出的函数和函数执行返回的对象， 所以，接下来 盘他～～
+
+**webpack/lib/webpack.js：**
+在这个模块里先定义了一个 `webpack()` 函数， 然后给这个导出的 `webpack()` 暴露了一波插件，其中便有我们熟悉的 `DefinePlugin` 和 `DllPlugin` 类似的插件。
+联想这些插件的用法 `require('webpack').DefinePlugin` 我们可以猜到， 我们在 `webpack.config.js` 写的 `require('webpack')` 引用便是这个`webpack()` 函数。查看 `webpack\package.json` 的 main 字段可以证实我们的猜想。
+
+闲言少叙，书归正文，我们最主要的是看执行 `webpack()` 函数发生了啥。
+1. `compiler  =  new Compiler()` 得到了 compiler 对象。
+2. 执行 `compiler.hooks.environment` 和 `compiler.hooks.afterEnvironment` 钩子。
+3. 调用 `new WebpackOptionsApply().process()`,这一步的目的，简单理解就是**把 webpack 的配置项以各种方式怼到 compiler 对象里**。处理配置项output, target, externals, devtool等。又挂载了一波 webpack 内置插件（通过各个插件实例提供的 apply 方法，在不同的生命周期钩子（ compiler.hooks） 注册事件。了解更多可查看【链接】webpack 插件 里的介绍）。
+4. 返回 compiler 对象。
+
+
+ 1) 继承自 Tapable
+      2) hooks(定义了一堆钩子)
+      3) 定义更多属性和方法，暂且不表(watch,run,runAsChild,emitRecords...)
+
+
+
+webpack 提供了一系列的生命周期钩子以便注册插件。在每个生命周期节点, webpack 会待用相应已注册的插件,并提供当前 webpack 编译状态信息。
 
 插件完成的功能是让注册一个方法，在指定的 webpack 生命周期调用这个方法。
+
+
 
 ## 大概的概念
 - 插件，就是一个模块
 - 插件执行apply 方法，可以向 webpack 生命周期钩子 注册事件
-- 通过 call callAsync 可执行 已经注册的事件
+- 通过 call callAsync 可执行 已经注册的事件的回调函数
+
+
+## 一步步执行 webpack
+发现，webpack 主体的执行流程基本是： 调用 compiler 对象的xx方法，调用xx钩子。
+xx方法是把整个流程串起来，而钩子是执行挂在各个生命周期的事件回调。
+可以认为，整个webpack 就是一个插件系统。
 
 ### 具体语法树和抽象语法树
 简单理解是:
 - 具体语法树，包含完整的源代码字符串信息。
 - 相对源码，抽象语法树省略了部分信息，比如一些辅助符号。
-- 一般的，在源代码的翻译和编译过程中，语法分析器创建出分析树，然后从分析树生成抽象语法树。
+- 一般的，在源代码的翻译和编译过程中，语法分析器创建出分
+析树，然后从分析树生成抽象语法树。
 
 webpack 使用 [acorn](https://github.com/acornjs/acorn) 进行编译
 
@@ -42,3 +84,7 @@ webpack 使用 [acorn](https://github.com/acornjs/acorn) 进行编译
 
 ## 最后打包的文件
 Webpack 其最初主要的目的是在浏览器端复用符合CommonJS规范的代码模块。
+
+## 参考
+- [webpack源码分析之四：plugin](https://segmentfault.com/a/1190000015836947#articleHeader7)
+
