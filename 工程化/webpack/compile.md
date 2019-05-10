@@ -45,15 +45,14 @@ webpack 基本的功能就是根据输入，进行编译输出。总体分为大
 4. 返回 compiler 对象。
 
 
- 1) 继承自 Tapable
-      2) hooks(定义了一堆钩子)
-      3) 定义更多属性和方法，暂且不表(watch,run,runAsChild,emitRecords...)
+compiler 对象在 webpack 中很重要，看官方文档：
+> `Compiler` 模块是 webpack 的支柱引擎，它通过 [CLI](https://webpack.docschina.org/api/cli) 或 [Node API](https://webpack.docschina.org/api/node) 传递的所有选项，创建出一个 compilation 实例。它扩展(extend)自 `Tapable` 类，以便注册和调用插件。大多数面向用户的插件首先会会在 `Compiler` 上注册。
 
+webpack 支柱引擎! 既然这么重要，我们需要看看 Compiler 类里到底定义了些什么！
+- 继承自Tapable 关于 tapable 可以看这里 【链接】
+- 定义 hooks 属性 (定义了一堆的生命周期钩子，用于注册插件。插件注册原理可以参考【链接 tapable】)
+- 定义更多属性和方法，此处暂且不表(比如：watch,run,runAsChild,emitRecords...)
 
-
-webpack 提供了一系列的生命周期钩子以便注册插件。在每个生命周期节点, webpack 会待用相应已注册的插件,并提供当前 webpack 编译状态信息。
-
-插件完成的功能是让注册一个方法，在指定的 webpack 生命周期调用这个方法。
 
 
 
