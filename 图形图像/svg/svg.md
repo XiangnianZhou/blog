@@ -24,7 +24,7 @@ SVG 最典型的特定是缩放不损失图像的质量。
 
 ## viewbox
 
-接下来我们改装一下上面的代码，让里面的正方形铺满 SVG 画布。
+接下来我们改装一下上面的代码，让里面的正方形铺满 viewport。
 
 ```xml
 <svg width="200" height="200" style="border:solid red 2px" viewBox="0 0 100 100">
@@ -38,12 +38,12 @@ SVG 最典型的特定是缩放不损失图像的质量。
 相较于上面的代码，这里仅仅多了 viewBox 属性，不过这个 viewBox **不是很容易解释，但是很容易理解**。
 看看上面的例子，然后，结合下面的一段话，基本就可以理解了。
 
-> svg 就像是我们的显示器屏幕，viewBox 就是截屏工具的那个选择的框框，最终呈现就是把框框选中的内容再次在显示器全屏显示。
+> viewport 就像是我们的显示器屏幕，viewBox 就是截屏工具的那个选择的框框，最终呈现就是把框框选中的内容再次在显示器全屏显示。
 
 简单的理解就是：
 
-1. 从 SVG 中截取一块区域
-2. 缩放这块区域到 SVG 大小
+1. 从 viewport 中截取一块区域
+2. 缩放这块区域到 viewport 大小
 
 然后，我们在改一下上面的例子，加深一下理解：
 
@@ -55,14 +55,14 @@ SVG 最典型的特定是缩放不损失图像的质量。
 
 基本信息：
 
--   SVG： 200 \* 200
+-   viewport： 200 \* 200
 -   矩形： 400 \* 400
 -   viewBox： 800 \* 800
 
 分析：
 
 1. viewBox 首先截取从(0, 0) 位置截取一个 800 \* 800 的区域；
-2. 这个区域缩放到和 SVG 大小相等。
+2. 这个区域缩放到和 viewport 大小相等。
 
 此时，
 
@@ -74,8 +74,7 @@ SVG 最典型的特定是缩放不损失图像的质量。
 
 ## preserveAspectRatio
 
-上面的例子中，viewport 和 viewBox 的比例是相等的，单如果比例不限等又会如何呢？
-很明显会面临如何对 viewBox 进行缩放处理的问题，这里可以类比 CSS 中的，background 相关的属性（暂且不讨论其他相关属性）：
+上面的例子中，viewport 和 viewBox 的比例是相等时 viewbox 默认会铺满 viewport，如果比例不相等又会如何呢？很明显将面临 viewBox 缩放的问题。对于这个问题，这里可以类比 CSS 的`background-size` 和 `background-position` 属性（暂且不讨论其他相关属性）：
 
 1. `background-size: cover|contain`:
 
@@ -100,3 +99,26 @@ meetOrSlice，有效值为：
 
 -   meet， 保持 viewbox 宽高比，尽可能放大 viewbox，使其 viewport 内是可见的。这时，viewport 可能会出现留白。
 -   slice，保持宽高比，viewbox 尽可能小，但要使 viewbox 全部覆盖 viewport。这个时候，可能会使部分 viewbox 超出 viewport，超出部分会被裁掉。
+
+改扯是的扯完了，看代码：
+
+```
+<svg width="200" height="200" style="border:solid red 2px" viewBox="0 0 100 200" preserveAspectRatio="xMaxYMid meet">
+    <rect  width="100" height="100" fill="#4c93cf"/>
+</svg>
+```
+
+基本信息：
+
+-   viewport： 200 \* 200
+-   矩形： 100 \* 100
+-   viewBox： 100 \* 200
+
+分析：
+
+-   viewbox 是 包含矩形在内的占 1/2 viewport 面积的区域；
+-   meet，会显示全部的 viewbox，不出现裁剪
+-   此时，viewbox 的高和 viewport 的高相同，所以，y 方向的对齐方式无效
+-   viewbox 的是 viewport 的 1/2，设置水平方向右对齐：xMax
+
+![preserveAspectRatio](https://github.com/XiangnianZhou/blog/blob/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/preserveAspectRatio.png?raw=true)
