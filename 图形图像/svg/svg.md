@@ -122,3 +122,97 @@ meetOrSlice，有效值为：
 -   viewbox 的是 viewport 的 1/2，设置水平方向右对齐：xMax
 
 ![preserveAspectRatio](https://github.com/XiangnianZhou/blog/blob/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/preserveAspectRatio.png?raw=true)
+
+## 转换坐标系统
+
+svg 元素可以通过缩放，移动，倾斜和旋转来变换。类似 css 的 transform。
+svg 的 transform 属性。
+
+不同：
+css 中是相对于元素自身的中心点的，而 svg 是相对于坐标系原点的。
+
+注：未来的 SVG2 版本中可通过类似 transform-origin 的形式设置变换的原点。
+
+### translate 位移
+
+语法：
+
+```
+transform="translate(<x> [<y>])"
+```
+
+其中 y 方向偏移为非必选，如果没有默认为 0。
+
+HTML 元素的偏移是相对自己的中心点，**svg 元素** 的偏移是相对 SVG 的左上角。
+虽然，在随后的表现上是一样的。
+但，在渲染机制上有着很大的不同：
+css 中，会先画好元素，然后再发生偏移。
+svg 中，先偏移坐标系，然后再渲染元素。
+
+### scale 缩放
+
+语法：
+
+```
+transform="scale(<x> [<y>])"
+```
+
+其中：
+x， 表示沿 x 轴的缩放值，用来水平描述延长或拉伸元素；
+y，表示沿 y 轴的缩放值，用来垂直延长或缩放元素；
+y 是可选的，如果没有默认与 x 值相同。
+
+HTML 中的缩放：
+
+-   相对元素中心点
+-   缩放元素本身
+-   元素定位不发生变化
+
+SVG 中的缩放：
+
+-   相对 SVG 左上角
+-   缩放坐标系
+-   元素被重新定位
+
+### skew 斜切
+
+语法：
+
+```
+transform="skewX(<a>)"
+
+transform="skewY(<a>)"
+```
+
+其中，
+
+-   skewX 声明一个沿 x 轴的倾斜；
+-   skewY 声明一个沿 y 轴的倾斜。
+
+同其他的 transform 变换，skew 的操作对象也是坐标轴，操作完成后会被重新定位。
+
+### rotate 旋转
+
+语法：
+
+```
+transform="rotate(<a> [<x> <y>])"
+```
+
+其中，
+
+-   a 表示旋转角度，<del>无单位，默认是单位是度（deg）；</del>
+-   x 和 y 可选，代表旋转中心点，<del>无单位</del>
+-   如果没有设置 xy 的值，默认为当前用户坐标系的原点。
+
+rotate 与上面介绍的另外几个操作不同的是，可以指定旋转中心点，看似和 CSS 中的旋转规则相同，其实：
+
+```
+transform="rotate（a x y)"
+```
+
+等同于：
+
+```
+transform="translate(x y) rotate（a) translate(-x -y)"
+```
