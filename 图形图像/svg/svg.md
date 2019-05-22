@@ -216,3 +216,136 @@ transform="rotate（a x y)"
 ```
 transform="translate(x y) rotate（a) translate(-x -y)"
 ```
+
+# 文本
+
+## 基本概念
+
+首先需要料及一些关于字体的一些概念：
+
+-   字符：一个 Unicode 码点。
+-   符号：字符的视觉呈现。
+-   字体：一坨字符对应的符号集合。
+
+我的解释可能不太准确，下面贴出来比较正经的解释。引自《SVG 精髓》及英文原版书。
+
+中文版:
+
+> -   **字符**: 在 XML 文档中，字符是指带有一个数字值的一个或多个字节，数字值与 Unicode 标准对应。例如，字母 g 是 Unicode 值为 103 的字符。
+> -   **符号**: 符号（glyph）是指字符的视觉呈现。每个字符都可以用很多不同的符号来呈现。图 9-1 展示了用两种不同的符号呈现的单词“glyphs”。注意开头的字母 g，同一个字符，但符号却明显不同。
+>     图是酱婶的： ![两种符号](index_files/f955246e-5ca2-4bb3-ac1f-eae8e1431c99.png)
+>     一个符号可能由多个字符构成。一些字体为特定的字母组合（如 fl 和 ff）准备了单独的符号，以使它们更好看，这种特性叫作“连字”（ligature）。有时候，一个字符也可能由几个符号组合而成，比如打印程序可能会组合符号 e 和重音符号（ ́）来打印字符 é（Unicode 值为 233）。
+>     **字体**: 字体是指代表某个字符集合的一组符号。
+
+英文版：
+
+> **Character**: A character, as far as an XML document is concerned, is a byte or bytes with anumeric value according to the Unicode standard. For example, what we call the letter g is the character with Unicode value 103.
+> **Glyph**: A glyph is the visible representation of a character or characters. A single character can have many different glyphs to represent it. Figure 9-1 shows the word glyphs written with two different sets of glyphs—look particularly at the initial g—it’s the same character, but the glyphs are markedly different.
+> 图见中文版 ↑↑
+> Multiple characters can reduce to a single glyph; some fonts have separate glyphs for the letter combinations fl and ff to make their spacing look better (these are called ligatures). Other times, a single character can be composed of multiple glyphs; a print program might create the character é (which has Unicode value 233) by combining the e glyph with a nonspacing accent mark (´).
+> **Font**: A font is a collection of glyphs representing a certain set of characters.
+
+了解了基本概念后，继续深入理解几个关于字体的概念：
+
+-   基线（Baseline）：字体中的所有符号以基线对齐;
+-   上坡度（ascent）： 基线到字体中最高字符顶部的距离称为上坡度;
+-   下坡度（descent）：基线到最深字符底部的距离称为下坡度;
+-   em-box: 字符的总高度为上坡度和下坡度之和，也称为 em 高度。em-box 是指宽度为 em 高度的方块;
+-   大写字母高度（cap-height）是指基线上的大写字母的高度;
+-   x 高度，是指基线到小写字母 x 顶部的高度。x 高度通常能比 em 高度更好地衡量一个字体的尺寸和可读性。
+    ![符号的度量](index_files/422d7afe-0a0e-4479-ab57-9d16d5b93a64.png)
+
+## text 元素
+
+在一个 SVG 文档中，`<text>`元素内部可以放任何的文字。
+如：
+
+```
+<text>balabala</text>
+```
+
+和 CSS 差不多，SVG 中的文本也有很多字体和文本有关的属性，甚至属性名都是完全相同的。如：
+font-family、font-style、font-weight、font-variant、font-stretch、font-size、font-size-adjust、kerning、letter-spacing、word-spacing 和 text-decoration。
+
+### 文本位置
+
+语法：
+
+```
+<text x="x" y="y">balabala</text>
+```
+
+其中：
+
+-   x：将文本向右移动 x
+-   y：将文本想下移动 y （指定文本基线位置）
+-   x 和 y 值是可以带单位的
+-   文本移动是相对 SVG 的左上角
+
+另外 x 和 y 还可以接受一个数列：
+
+```
+<text x="x1 x2 x3 x4 x5 … xn" y="y1 y2 y3 y4 y5 … yn">balabala</text>
+```
+
+分别定义每个符号的位置：第一个符号(x1,y1)，第二个符号(x2,y2)...，没有指定的继续使用最后组坐标。
+
+### 文本对齐
+
+```
+<text text-anchor="start|middle|end">balabala</text>
+```
+
+基于文本坐标位置的对齐方式。
+
+### 文本偏移
+
+```
+<text dx="dx" dy="dy">balabala</text>
+```
+
+相对文本位置的偏移量。
+
+dx 和 dy 也可以接受一个数列，表示对多个符号的偏移量。
+
+### 文本旋转
+
+```
+<text rotate="r">balabala</text>
+```
+
+表示对每个字符进行旋转 r 度，其中 r，没有单位，默认单位为 deg。
+
+当然，也可以给 rotate 一个数列，给多个符号指定不同的旋转角度。
+
+注意：如果相对整个文本元素进行旋转，使用转换坐标系的方式`transform="rotate(r)"`。
+
+### 纵向文本
+
+`writing-mode：tb`: top to bottom，从上到下。实现文本的纵向排列。
+`glyph-orientation-vertical`： 属性来设置文本（不是整个文本元素）旋转角度。
+据我测试，后一个属性的兼容性不是太好。
+
+## tspan 元素
+
+用来标记大块文本的子部分，它必须是一个 `<text>` 元素的或别的 `<tspan>` 元素的子元素。
+
+使用场景和 HTML 中的 span 标签很相似，可以用来在一段文本中单独处理一小段文本内容，比如加粗，倾斜和上下标等。
+
+## textPath 元素
+
+利用 xlint:href 属性把字符对齐到路径，让字体可以顺着路径排列。
+这是个很骚的操作，必须得有例子：
+
+```
+<svg width="800" height="800">
+    <path id="path" d="M 50 110 A 40 30 0 1 0 230 110 M 250 110" fill="none" stroke="none" />
+    <text>
+        <textPath xlink:href="#path" font-size="22">
+            风 吹 水 面 层 层 浪 ~
+        </textPath>
+    </text>
+</svg>
+```
+
+![textPath的例子](index_files/6fd7a734-898a-47b4-8fa9-eabe58877cf4.png)
