@@ -330,7 +330,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 ```
 效果如下：
 
-![path 画一个矩形](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/paht-rect.png)
+![path 画一个矩形](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/path-rect.png)
 
 
 `d="M20 20 L180 20 L180 80 l-160 0 l0 -60"` 中，M，L 和 l 即为**命令**，命令后面便是这个命令作用的坐标。
