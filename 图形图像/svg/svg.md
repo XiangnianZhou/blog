@@ -233,6 +233,223 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 ```
 
 # 形状
+在 SVG 建立坐标系统之后就可以画图了， 下面介绍 SVG 中的形状。
+
+## 矩形
+
+语法：
+```
+<rect x="x" y="y" rx="rx" ry="ry" width="width" height="height" />
+```
+ 其中：
+ - x，y 指定矩形左上角的位置
+ - width 和 height 为矩形的宽高
+ - rx 和 ry，表示圆角半径。默认为0
+
+栗子：
+
+```
+<svg width="200" height="200">
+    <rect width="150" height="80" fill="red" rx="15" ry="15"/>
+</svg>
+```
+
+![圆角矩形](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/rect.png)
+
+
+## 圆形
+
+语法：
+```
+<circle cx="cx" cy="cy" r="r" />
+```
+其中：
+- cx，cy 指定圆心的位置
+- r 指定半径
+
+
+## 椭圆
+
+语法：
+```
+<ellipse cx="cx" cy="cy" rx="rx" ry="ry" />
+```
+
+其中：
+- rx, ry 分别指定椭圆的x半径和y半径
+- cx，cy 指定椭圆中心的位置
+
+## 线
+
+语法：
+```
+<line x1="x1" y1="y1" x2="x2" y2="y2" />
+```
+
+其中：
+- x1，y1，指定一个点
+- x2，y2， 指定另一个点
+- 两点确定一条小
+
+## 折线
+
+语法：
+```
+<polyline points="x1 y1, x2 y2, x3 y3, x4 y4, … , xn yn" />
+```
+
+其中：
+- points：点集合
+- 点集中的每个数字都可以通过空格，逗号或换行隔开，但是更推荐上面的写法，这样能比较清晰的看出来每个点的坐标
+
+## 多边形
+
+语法：
+```
+<polygon points="x1 y1, x2 y2, x3 y3, x4 y4, … , xn yn" />
+```
+语法与polyline相同，不同的是绘制最后回到第一个点，形成一个闭合图形。
+
+
+## 路径
+
+上面介绍的所有基本形状都是 `<path>` 元素的简写形式。
+`<path>` 元素通过指定一系列相互连接的线、圆弧和曲线绘制任意形状的轮廓。
+所有描述的轮廓的数据都放在 `<path>` 元素的 d（data 的缩写）属性中，d 的数据包括命令以及命令对应的坐标信息。
+
+上面关于 `<path>` 的介绍， 让人感觉很玄幻，简单理解**d属性的值是“命令+参数”的序列**。
+- 命令，一个单个字符，用来描述行为
+- 参数，一般是指定命令对应的坐标信息
+
+先看一个简单的例子来瞅瞅，好对 d 属性有个最初的印象：
+
+```
+<svg width="200" height="1200">
+    <path d="M20 20 L180 20 L180 80 l-160 0 Z" stroke-width="8" fill="transparent"  stroke="red"/>
+</svg>
+```
+效果如下：
+
+![path 画一个矩形](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/paht-rect.png)
+
+
+`d="M20 20 L180 20 L180 80 l-160 0 l0 -60"` 中，M，L 和 l 即为**命令**，命令后面便是这个命令作用的坐标。
+每个路径都必须以 M 命令（move to）开始。和 Canvas 一样，moveto 命令用来把“笔”移动到一个位置，然后开始“画画”。
+
+在 moveto 命令后面是一个 L（lineto）命令，用来绘制一条线。通过前三条命令画出来了两条线。接下来的 l 命令，还是 lineto 命令，与 L 命令不同的是，l 命令的坐标是相对坐标（相对当前画笔位置）。
+其实，每种命令都有两种表示方式：
+- 大写字母，表示绝对定位；
+- 小写字母，表示相对定位。
+
+最后一个 Z（closepath）命令，用来闭合路径，与第一个点连成线。
+
+画完第一个框框，并且了解路径的基本的套路后，开始了解更多的命令：
+
+
+### 直线命令
+除了上面介绍的 lineto 命令，还有两个简写形式的命令，用来画水平方向和竖直方向的直线。
+
+| 简写形式 | 等价的冗长形式 | 效　果|
+| --- | --- | --- |  --- |
+| H 20 | L 20 current_y | 绘制一条到绝对位置 (20, current_y) 的线 |
+| h 20 | l 20 0 | 绘制一条到 (current_x + 20,current_y) 的线 |
+| V 20 | L current_x 20 | 绘制一条到绝对位置 (current_x,20) 的线 |
+| v 20 | l 0 20 | 绘制一条到 (current_x, current_y + 20) 的线 |
+
+还有更简洁的形式：
+L H 和 V（及其小写）后面都可以跟多个坐标值。跟 ` <polyline>` 元素一样，会依次连接起来这些坐标点。
+
+
+### 曲线命令
+绘制平滑曲线的命令分为贝塞尔曲线和弧形（椭圆弧）两种。
+
+#### 椭圆弧
+绘制直线段相对简单，因为路径上的两个点就就唯一确定一条直线段。但如果是椭圆弧的话，由于在两个点之间可以绘制无限条弧线，因此我们必须给出额外信息，以在它们之间绘制一条曲线路径。
+
+1. 给出圆弧上的两个点，并且给出椭圆的 x 半径和 y 半径，可以确定出两个椭圆。如下图 a；
+2. 此时，两点之间存在 4 个圆弧，两个大弧（角度大于或等于180度）两个小弧（角度小于180度），通过指定大小弧可以确定出两条圆弧。
+3. 由两个大弧和两个小弧的绘制方向不同，可以确定出一条圆弧。
+
+![椭圆弧命令](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/ellipse-path.jpg)
+
+不过，上面的描述中默认椭圆的 x 轴 和 y 轴都是坐标轴平行的，如果有旋转角，我们还需要知道这个旋转角度才能唯一确定出一条圆弧。
+
+圆弧命令以字母 A （绝对坐标的缩写）或者 a （相对坐标的缩写）开始，后面紧跟以下 7
+个参数。
+- 点所在椭圆的 x 半径和 y 半径。
+- 椭圆的 x 轴旋转角度 x-axis-rotation 。
+-  large-arc-flag ，如果需要圆弧的角度小于 180 度，其为 0；如果需要圆弧的角度大于或等于 180 度，则为 1。
+-  sweep-flag ，如果需要弧以逆时针绘制则为 0，以顺时针绘制则为 1。
+- 终点的 x 坐标和 y 坐标（起点由最后一个绘制的点或者最后一个 moveto 命令确定）。
+
+命令形式：
+```
+A rx ry x-axis-rotation large-arc-flag sweep-flag x y
+a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
+```
+试着画一下这四个圆弧：
+```
+<svg width="400" height="300">
+    <path d="M 125,75 A100,50 0 1,0 225,125" fill="none" stroke="red" stroke-width="3"/>
+    <path d="M 125,75 A100,50 0 0,1 225,125" fill="none" stroke="blue"  stroke-width="3"/>
+<path d="M 125,75 A100,50 0 1,1 225,125" fill="none" stroke="black" stroke-width="3"/>
+    <path d="M 125,75 A100,50 0 0,0 225,125" fill="none" stroke="green"  stroke-width="3"/>
+</svg>
+```
+
+![画四个圆弧](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/ellipse-demo.png)
+
+
+
+### 贝塞尔曲线
+
+#### 二次贝塞尔曲线
+最简单的贝塞尔曲线是二次曲线。不看数学原理的话，简单理解：**我们能通过三个点（起点、终点和控制点）确定一条曲线**。
+
+在 SVG 中，通过在 `<path> ` d 属性中使用 Q 或者 q 命令指定一个二次曲线。
+曲线起点在 (30, 75)，终点在 (300, 120)，控制点在 (240, 30)，代码如下：
+
+```
+<svg width="400" height="300">
+  <path d="M30 75 Q240 30, 300 120" fill="none" stroke="red" stroke-width="3"/>
+</svg>
+```
+![二次贝塞尔](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/path-q.png)
+
+
+
+二次曲线命令后面可以跟多组坐标，下一组坐标会以上一组坐标的终点为起点绘制曲线。不过这种方法得到的曲线不是平滑曲线，日常中很多场景是希望得到一个平滑曲线。对于这种需求，SVG 提供了流畅的二次曲线命令命令（用 T 或 t 表示）。
+T 命令会自动计算控制点的位置，方法是“使新的控制点与上一条命令中的控制点相对于
+当前点中心对称”(PS的钢笔工具很容易模拟这个过程)。因为控制点是自动计算得到的，所以 T 命令只要一组坐标值。
+
+```
+<svg width="200" height="200">
+  <path d="M30 100 Q 80 30, 100 100 T 200 80"  fill="none" stroke="red" stroke-width="3"/>
+</svg>
+```
+
+![平滑二次曲线](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/path-q2.png)
+
+#### 三次贝塞尔曲线
+
+二次曲线和三次曲线之间的区别是三次曲线有两个控制点。这里不讨论其几何原理（原理也不太复杂），三次曲线能呈现更复杂的形状。
+
+![三次贝塞尔曲线](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/path-c-more.jpg)
+
+三次曲线：
+- 使用命令 C 或 c
+- 同二次曲线一样，命令后面可以有多组坐标
+- 同二次曲线一样，也可以平滑连接多个曲线，使用 S（或 s）命令
+
+在 CSS 中的 `cubic-bezier` 就是用来确定一个三次贝塞尔曲线（Cubic Bézier curves）的。不过 `cubic-bezier` 确定了起始点(0,0)和终点(1,1)，所以  `cubic-bezier` 只需两个点就可以确定一条三次曲线。
+
+接下来模拟一条 CSS 中的三次曲线 `cubic-bezier(0,1, 1,0)`：
+```
+<svg width="200" height="200" viewbox="0 0 100 100">
+  <path d="M0 100 C 0,0  100,100 100,0"  fill="none" stroke="red"/>
+</svg>
+```
+![对比](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/path-c-demo.png)
 
 # 文字
 
