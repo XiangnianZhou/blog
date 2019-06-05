@@ -453,6 +453,93 @@ T 命令会自动计算控制点的位置，方法是“使新的控制点与上
 
 # 文字
 
+## text 元素
+在一个SVG文档中，`<text>` 元素内部可以放任何的文字。
+如：
+```
+<text>balabala</text>
+```
+和 CSS 差不多，SVG 中的文本也有很多字体和文本有关的属性，甚至属性名都是完全相同的。如：
+font-family、font-style、font-weight、font-variant、font-stretch、font-size、font-size-adjust、kerning、letter-spacing、word-spacing和text-decoration。
+
+
+### 文本位置
+
+语法：
+
+```
+<text x="x" y="y">balabala</text>
+```
+
+其中：
+- x：将文本向右移动 x
+- y：将文本想下移动 y （指定文本基线位置）
+- x 和 y 值是可以带单位的
+- 文本移动是相对 SVG 的左上角
+
+另外 x和y还可以接受一个数列：
+```
+<text x="x1 x2 x3 x4 x5 … xn" y="y1 y2 y3 y4 y5 … yn">balabala</text>
+```
+分别定义每个符号的位置：第一个符号(x1,y1)，第二个符号(x2,y2)...，没有指定的继续使用最后组坐标。
+
+### 文本对齐
+
+```
+<text text-anchor="start|middle|end">balabala</text>
+```
+基于文本坐标位置的对齐方式。
+
+### 文本偏移
+
+```
+<text dx="dx" dy="dy">balabala</text>
+```
+相对文本位置的偏移量。
+
+dx 和 dy 也可以接受一个数列，表示对多个符号的偏移量。
+
+### 文本旋转
+
+```
+<text rotate="r">balabala</text>
+```
+表示对每个字符进行旋转 r 度，其中 r，没有单位，默认单位为 deg。
+
+当然，也可以给 rotate 一个数列，给多个符号指定不同的旋转角度。
+
+注意：如果想对整个文本元素进行旋转，需使用上面提到的转换坐标系的方式`transform="rotate(r)"`。
+
+### 纵向文本
+
+- `writing-mode：tb` （tb：top to bottom），从上到下。实现文本的纵向排列。
+- `glyph-orientation-vertical` 属性来设置文本（不是整个文本元素）旋转角度。
+
+
+## tspan 元素
+
+用来标记大块文本的**子部分**，它必须是一个 `<text>` 元素的或别的 `<tspan>` 元素的子元素。
+
+使用场景和 HTML中的 span标签很相似，可以用来在一段文本中单独处理一小段文本内容，比如加粗，倾斜和上下标等。
+
+
+## textPath 元素
+利用 xlint:href 属性把字符对齐到路径，让字体可以顺着路径排列。
+这是个很骚的操作，必须得有例子：
+
+```
+<svg width="800" height="800">
+    <path id="path" d="M 50 110 A 40 30 0 1 0 230 110 M 250 110" fill="none" stroke="none" />
+    <text>
+        <textPath xlink:href="#path" font-size="22">
+            风 吹 水 面 层 层 浪 ~
+        </textPath>
+    </text>
+</svg>
+```
+
+![textPath的例子](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/textpath-demo.jpg)
+
 # 样式
 
 # 在浏览器使用
