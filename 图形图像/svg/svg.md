@@ -538,7 +538,7 @@ dx 和 dy 也可以接受一个数列，表示对多个符号的偏移量。
 </svg>
 ```
 
-![textPath的例子](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/textpath-demo.jpg)
+![textPath的例子](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/textpath-demo.png)
 
 # 样式
 
