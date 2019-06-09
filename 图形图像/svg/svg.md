@@ -714,7 +714,7 @@ fill="red" stroke="black" stroke-width="2"/>
             </symbol>
         </svg>
 
-        <div style="font-size:60px;line-height:60px;">
+        <div style="font-size:40px;">
             石头
             <svg width="60" height="60" style="vertical-align:middle;">
                 <use xlink:href="#shape" x="5" y="5" width="50" height="50" />
@@ -729,3 +729,69 @@ fill="red" stroke="black" stroke-width="2"/>
 ![symbol的例子](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/use-3.png)
 
 # 在浏览器使用
+
+## 作为图像
+
+将图像包含在 `<img>` 元素内。
+
+```HTML
+<img src="./scissor.svg" />
+```
+
+或者 CSS 中：
+
+```HTML
+<div style="height:200px; width:200px;background:url(./scissor.svg)"></div>
+```
+
+仅仅作为图像引入：
+
+-   svg 不能与主页面通信；
+-   主页面的样式对 SVG 无效；
+-   主页面脚本无法感知和修改 SVG 的结构；
+-   大多数 Web 浏览器都不会加载 SVG 自己引用的文件，包括其他图像文件、外部脚本，甚至是 Web 字体文件。
+
+在`<img>`元素内包含 SVG 时，注意宽高的计算方式：
+
+> HTML `<img>` 元素定义了一个空间，表示浏览器应该将图像绘制到这个空间中。要使用的图像文件指定在 src（source）属性内。
+
+> 图像的高度和宽度可以使用属性或者 CSS 属性（优先考虑）设置。
+
+> 如果不指定 `<img>` 元素的尺寸，就会使用图像文件固有的尺寸。如果只指定高度（宽度），宽度（高度）就会按比例缩放，以使高宽比（宽高比）与图像文件固有的尺寸匹配。
+
+复习完了 `<img>` 元素的知识，接下来讨论一下 SVG 的尺寸问题：
+
+> 对于栅格图像来说，它固有的尺寸就是它的像素尺寸。对于 SVG 来说，则更为复杂。如果文件中的根元素 `<svg>` 带有明确的 height 和 width 属性，则它们会被用作文件的固有尺寸。如果只指定 height 或者 width 而不是两个都指定，并且 `<svg>` 带有 viewBox 属性，那么将用 viewBox 计算宽高比，图像也会被缩放以匹配指定的尺寸。如果 `<svg>` 带有 viewBox 属性而没有尺寸，则 viewBox 的 height 和 width 将被视为像素长度。
+
+> 如果 `<img>`元素和 `<svg>` 根元素都没有任何有关图像尺寸的信息，浏览器应该为嵌入内容应用默认 HTML 尺寸，通常是 150 像素高、300 像素宽，但是最好不要依赖默认尺寸。
+
+在 CSS 作为图像使用 SVG 时，宽高的计算方式与此相同。
+
+## 将 SVG 作为应用程序
+
+哇~~ 这个狠了，啥叫将 SVG 作为应用程序？？
+即使怼到 `<object>` 或 `<embed>` 里。
+
+```HTML
+<object data="cat.svg" type="image/svg+xml"
+    title="Cat Object" alt="Stick Figure of a Cat">
+    <!-- 文本或者栅格图像用作备用选项 -->
+    <p>No SVG support! Here's a substitute:</p>
+    <img src="cat.png" title="Cat Fallback"
+    alt="A raster rendering of a Stick Figure of a Cat"/>
+</object>
+```
+
+与图像不同的是，嵌入的 SVG 可以包含外部文件，同时脚本可以在该对象和父页面之间进行通信。
+
+## HTML5 中内联 SVG
+
+在上文的 symbol 元素部分，我们已经见过这种用法了。
+
+默认情况下，定位 SVG 时采用内联显示模式（这意味着它和前后的文本会被插入到同一行），并且其尺寸会基于 `<svg>` 元素的 height 和 width 属性决定。
+使用 CSS 时可以通过设置 height 和 width CSS 属性改变尺寸，使用 display、margin、padding 和许多其他 CSS 定位属性改变其定位。
+主文档指定的样式会被 SVG 继承。
+
+# 最后
+
+洋洋洒洒写了一大坨，感觉写的也不咋滴。
