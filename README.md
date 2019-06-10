@@ -12,6 +12,11 @@
 
 -   [小前端学编译原理](https://juejin.im/post/5cc81e0151882577e763ff86)
 
+### 优化
+
+1. 图形图像
+    - [SVG 基础](https://juejin.im/post/5cfdbc5951882519172973d5)
+
 ### 树莓派
 
 -   [用 Node.js + Raspberry Pi 打造一个不一样的闹钟](https://www.jianshu.com/p/6612a3635139)
