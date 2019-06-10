@@ -8,7 +8,7 @@
 
 SVG，即可缩放矢量图形（Scalable Vector Graphics），是一种 XML 应用，可以以一种简洁、可移植的形式表示图形信息。
 
-在矢量图形系统中，图像被描述为一些列的形状。矢量图形阅读器接受在指定的坐标集上绘制形状的指令。而不是接受一系列的已经计算好的像素。
+在矢量图形系统中，图像被描述为一系列的形状。矢量图形阅读器接受在指定的坐标集上绘制形状的指令。而不是接受一系列的已经计算好的像素。
 
 由于 SVG 是 XML 程序，所以图像的有关信息被存储为纯文本，而且具有 XML 的开放性、可移植性以及可交互性。
 
@@ -26,7 +26,7 @@ SVG 的世界就是一张无限大的画布。文档打算使用的画布区域�
 </svg>
 ```
 
-这里的的 `width="200" height="200"` 便是用来设置视口的大小。效果如下：
+这里的 `width="200" height="200"` 便是用来设置视口的大小；style 设置样式， rect 元素用来画一个矩形。效果如下：
 
 ![SVG - viewport](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/viewport1.png)
 
@@ -50,7 +50,7 @@ viewBox="x, y, width, height"
 ![SVG - viewbox1](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/viewbox1.png)
 
 相较于上面的代码，这里仅仅多了 viewBox 属性。不过这个 viewBox 属性**解释起来有点麻烦，但是很容易理解**。
-看看两个的例子，然后，结合下面的一段话，基本就可以理解了。
+看两个例子，然后，结合下面的一段话，基本就可以理解了。
 
 > SVG 就像是我们的显示器屏幕，viewBox 就是截屏工具的那个选择的框框，最终呈现就是把框框选中的内容再次在显示器全屏显示。
 
@@ -59,7 +59,7 @@ viewBox="x, y, width, height"
 1. 从 SVG 中截取一块区域
 2. 显示时，缩放这块区域到视口大小
 
-然后，我们在改一下上面的例子，加深一下理解：
+然后，我们再改一下上面的例子，加深一下理解：
 
 ```XML
 <svg width="200" height="200" style="border:solid red 2px" viewBox="0 0 800 800" >
@@ -120,17 +120,17 @@ viewbox 带来的变化，其实源自其对坐标系的改变。接下来我们
 # 坐标系
 
 先介绍两个概念：
-**初始视口坐标系**是一个建立在视口上的坐标系。原点(0,0)在视口的左上角，x 轴正向指向右，y 轴正向指向下，初始坐标系中的一个单位等于视口中的一个"像素"。
+**初始视口坐标系**，是一个建立在视口上的坐标系。原点(0,0)在视口的左上角，x 轴正向指向右，y 轴正向指向下，初始坐标系中的一个单位等于视口中的一个"像素"。
 
-**用户坐标系**是建立在 SVG 画布上的坐标系。这个坐标系一开始和视口坐标系完全一样。使用 viewBox 属性，初始用户坐标系统可以变成与视窗坐标系不一样的坐标系，如上面关于 viewBox 属性的第一个例子中，用户坐标系的一个单位等于视口坐标系的两个单位。
+**用户坐标系**，是建立在 SVG 画布上的坐标系。这个坐标系一开始和视口坐标系完全一样。使用 viewBox 属性，初始用户坐标系统可以变成与视窗坐标系不一样的坐标系，如上面关于 viewBox 属性的第一个例子中，用户坐标系的一个单位等于视口坐标系的两个单位。
 
-通过 viewBox 创建了一个用户坐标系之后，后代元素的定位不再以厨师坐标系定位，而是以新建的用户坐标系。
+通过 viewBox 创建了一个用户坐标系之后，后代元素的定位不再以初始坐标系定位，而是以新建的用户坐标系定位。
 
 ## 坐标系统变换
 
 开始具体看这节内容之前先记住一句话： **SVG 是坐标系统变换而不是元素变换**。
 
-SVG 元素的变换包括缩放，移动，倾斜和旋转等，类似 CSS 的 transform，SVG 中使用 **transform 属性**。不同的是
+SVG 变换包括缩放，移动，倾斜和旋转等，类似 CSS 的 transform，SVG 中使用 **transform 属性**。不同的是
 
 -   CSS 中的变换是相对于元素自身的中心点，而 SVG 中是**相对于坐标系原点**的；
 -   CSS 对元素的变换； SVG 是对坐标系的变换：根据变换元素，先复制当前用户坐标系，然后**对用户坐标系副本进行变换**；
@@ -150,7 +150,7 @@ transform="translate(<x> [<y>])"
 其中 y 方向偏移为非必选，默认为 0。
 
 HTML 元素的偏移是相对自己的中心点，SVG 元素 的偏移是相对 SVG 的左上角。
-虽然，在最后的表现上是一样的。但，在渲染机制上有着很大的不同：
+虽然在最后的表现上是一样的。但在渲染机制上有着很大的不同：
 
 -   CSS 中，会先画好元素，然后再发生偏移。
 -   SVG 中，先偏移坐标系，然后再渲染元素。
@@ -220,7 +220,7 @@ transform="rotate（a x y)"
 
 等同于：
 
-```
+```XML
 transform="translate(x y) rotate（a) translate(-x -y)"
 ```
 
@@ -228,7 +228,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 一个图形对象上可以做多个变换。我们只需将多个变换通过空格或逗号分隔，依次放入 transform 属性即可。
 
-```
+```XML
 <rect height="15" width="20" transform="translate(30, 20) scale(2)" fill=" gray" />
 ```
 
@@ -240,7 +240,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 语法：
 
-```
+```XML
 <rect x="x" y="y" rx="rx" ry="ry" width="width" height="height" />
 ```
 
@@ -252,7 +252,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 栗子：
 
-```
+```XML
 <svg width="200" height="200">
     <rect width="150" height="80" fill="red" rx="15" ry="15"/>
 </svg>
@@ -264,7 +264,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 语法：
 
-```
+```XML
 <circle cx="cx" cy="cy" r="r" />
 ```
 
@@ -277,7 +277,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 语法：
 
-```
+```XML
 <ellipse cx="cx" cy="cy" rx="rx" ry="ry" />
 ```
 
@@ -290,7 +290,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 语法：
 
-```
+```XML
 <line x1="x1" y1="y1" x2="x2" y2="y2" />
 ```
 
@@ -298,13 +298,13 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 -   x1，y1，指定一个点
 -   x2，y2， 指定另一个点
--   两点确定一条小
+-   两点确定一条线
 
 ## 折线
 
 语法：
 
-```
+```XML
 <polyline points="x1 y1, x2 y2, x3 y3, x4 y4, … , xn yn" />
 ```
 
@@ -317,7 +317,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 语法：
 
-```
+```XML
 <polygon points="x1 y1, x2 y2, x3 y3, x4 y4, … , xn yn" />
 ```
 
@@ -336,7 +336,7 @@ transform="translate(x y) rotate（a) translate(-x -y)"
 
 先看一个简单的例子来瞅瞅，好对 d 属性有个最初的印象：
 
-```
+```XML
 <svg width="200" height="1200">
     <path d="M20 20 L180 20 L180 80 l-160 0 Z" stroke-width="8" fill="transparent"  stroke="red"/>
 </svg>
@@ -400,14 +400,14 @@ L H 和 V（及其小写）后面都可以跟多个坐标值。跟 `<polyline>` 
 
 命令形式：
 
-```
+```XML
 A rx ry x-axis-rotation large-arc-flag sweep-flag x y
 a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
 ```
 
 试着画一下这四个圆弧：
 
-```
+```XML
 <svg width="400" height="300">
     <path d="M 125,75 A100,50 0 1,0 225,125" fill="none" stroke="red" stroke-width="3"/>
     <path d="M 125,75 A100,50 0 0,1 225,125" fill="none" stroke="blue"  stroke-width="3"/>
@@ -425,9 +425,9 @@ a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
 最简单的贝塞尔曲线是二次曲线。不看数学原理的话，简单理解：**我们能通过三个点（起点、终点和控制点）确定一条曲线**。
 
 在 SVG 中，通过在 `<path>` d 属性中使用 Q 或者 q 命令指定一个二次曲线。
-曲线起点在 (30, 75)，终点在 (300, 120)，控制点在 (240, 30)，代码如下：
+绘制曲线起点在 (30, 75)，终点在 (300, 120)，控制点在 (240, 30)，代码如下：
 
-```
+```XML
 <svg width="400" height="300">
   <path d="M30 75 Q240 30, 300 120" fill="none" stroke="red" stroke-width="3"/>
 </svg>
@@ -459,11 +459,11 @@ T 命令会自动计算控制点的位置，方法是“使新的控制点与上
 -   同二次曲线一样，命令后面可以有多组坐标
 -   同二次曲线一样，也可以平滑连接多个曲线，使用 S（或 s）命令
 
-在 CSS 中的 `cubic-bezier` 就是用来确定一个三次贝塞尔曲线（Cubic Bézier curves）的。不过 `cubic-bezier` 确定了起始点(0,0)和终点(1,1)，所以 `cubic-bezier` 只需两个点就可以确定一条三次曲线。
+在 CSS 中的 `cubic-bezier` 就是用来确定一个三次贝塞尔曲线（Cubic Bézier curves）的。不过 CSS 中确定了起始点(0,0)和终点(1,1)，所以 `cubic-bezier` 只需两个控制点就可以确定一条三次曲线。
 
 接下来模拟一条 CSS 中的三次曲线 `cubic-bezier(0,1, 1,0)`：
 
-```
+```XML
 <svg width="200" height="200" viewbox="0 0 100 100">
   <path d="M0 100 C 0,0  100,100 100,0"  fill="none" stroke="red"/>
 </svg>
@@ -478,7 +478,7 @@ T 命令会自动计算控制点的位置，方法是“使新的控制点与上
 在一个 SVG 文档中，`<text>` 元素内部可以放任何的文字。
 如：
 
-```
+```XML
 <text>balabala</text>
 ```
 
@@ -489,7 +489,7 @@ font-family、font-style、font-weight、font-variant、font-stretch、font-size
 
 语法：
 
-```
+```XML
 <text x="x" y="y">balabala</text>
 ```
 
@@ -502,7 +502,7 @@ font-family、font-style、font-weight、font-variant、font-stretch、font-size
 
 另外 x 和 y 还可以接受一个数列：
 
-```
+```XML
 <text x="x1 x2 x3 x4 x5 … xn" y="y1 y2 y3 y4 y5 … yn">balabala</text>
 ```
 
@@ -554,7 +554,7 @@ dx 和 dy 也可以接受一个数列，表示对多个符号的偏移量。
 利用 xlint:href 属性把字符对齐到路径，让字体可以顺着路径排列。
 这是个很骚的操作，必须得有例子：
 
-```
+```XML
 <svg width="800" height="800">
     <path id="path" d="M 50 110 A 40 30 0 1 0 230 110 M 250 110" fill="none" stroke="none" />
     <text>
@@ -728,7 +728,7 @@ fill="red" stroke="black" stroke-width="2"/>
 疗效：
 ![symbol的例子](https://raw.githubusercontent.com/XiangnianZhou/blog/master/%E5%9B%BE%E5%BD%A2%E5%9B%BE%E5%83%8F/svg/images/use-3.png)
 
-# 在浏览器使用
+# 在浏览器使用 SVG
 
 ## 作为图像
 
@@ -770,7 +770,7 @@ fill="red" stroke="black" stroke-width="2"/>
 ## 将 SVG 作为应用程序
 
 哇~~ 这个狠了，啥叫将 SVG 作为应用程序？？
-即使怼到 `<object>` 或 `<embed>` 里。
+就是怼到 `<object>` 或 `<embed>` 里。
 
 ```HTML
 <object data="cat.svg" type="image/svg+xml"
@@ -789,7 +789,7 @@ fill="red" stroke="black" stroke-width="2"/>
 在上文的 symbol 元素部分，我们已经见过这种用法了。
 
 默认情况下，定位 SVG 时采用内联显示模式（这意味着它和前后的文本会被插入到同一行），并且其尺寸会基于 `<svg>` 元素的 height 和 width 属性决定。
-使用 CSS 时可以通过设置 height 和 width CSS 属性改变尺寸，使用 display、margin、padding 和许多其他 CSS 定位属性改变其定位。
+可使用 CSS 的 height 和 width CSS 属性改变尺寸，使用 display、margin、padding 和许多其他 CSS 定位属性改变其定位。
 主文档指定的样式会被 SVG 继承。
 
 # 最后
