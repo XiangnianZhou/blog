@@ -16,6 +16,7 @@
 
 1. 图形图像
     - [SVG 基础](https://juejin.im/post/5cfdbc5951882519172973d5)
+    - [前端常说的优化之图片优化](https://juejin.im/post/5d09c7966fb9a07ebf4b729e)
 
 ### 树莓派
 
