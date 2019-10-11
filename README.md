@@ -21,3 +21,8 @@
 
 -   [用 Node.js + Raspberry Pi 打造一个不一样的闹钟](https://www.jianshu.com/p/6612a3635139)
 -   [升级闹铃 -- 播报天气预报](https://www.jianshu.com/p/2dc4f8e385ff)
+
+## js 梳理
+
+1. 基础
+    - [类型判断](https://www.jianshu.com/p/c248c0670951)
