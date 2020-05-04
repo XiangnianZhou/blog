@@ -26,3 +26,7 @@
 
 1. 基础
     - [类型判断](https://www.jianshu.com/p/c248c0670951)
+
+
+## 小教程
+- [MySQL 错误： BY clause; this is incompatible with sql_mode=only_full_group_by](https://www.jianshu.com/p/6fddf95b7344)
