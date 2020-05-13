@@ -30,3 +30,4 @@
 
 ## 小教程
 - [MySQL 错误： BY clause; this is incompatible with sql_mode=only_full_group_by](https://www.jianshu.com/p/6fddf95b7344)
+- [使用 shell 脚本批量处理文件](https://www.jianshu.com/p/315ed8a4ee29)
