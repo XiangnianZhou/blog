@@ -29,7 +29,7 @@ export DENO_INSTALL="/home/xxx/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 ```
 
-然后，重启终端，已经可以使用deno命令了：
+然后，重新打开终端，已经可以使用deno命令了：
 
 ```sh
 deno --version
