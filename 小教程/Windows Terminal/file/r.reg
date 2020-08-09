@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+ 
+[HKEY_CLASSES_ROOT\Directory\Background\shell\wt]
+@="此处打开 Windows terminal"
+"Icon"="C:\\win10\\icon\\terminal.ico"
+ 
+[HKEY_CLASSES_ROOT\Directory\Background\shell\wt\command]
+@="C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe"
