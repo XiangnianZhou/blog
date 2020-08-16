@@ -21,13 +21,13 @@
 在windows 的应用商店下载安装 [ubuntu](https://www.microsoft.com/zh-cn/p/ubuntu-2004-lts/9n6svws3rx71#activetab=pivot:overviewtab)
 
 4. 启动 Ubuntu
-如果上一步没有重启电脑，打开 Ubuntu会出错
+如果第2步没有重启电脑，打开 Ubuntu 可能会出错
 ![error](./imgs/error.png)
 
 启动后，输入用户名和密码，就可以使用 Ubuntu 了。
 此时打开 Windows Terminal，也**自动有 Ubuntu 的选项**了。
 
-## 把 Windows Terminal 右键菜单
+## 把 Windows Terminal 添加到右键菜单
 
 1. 准备内一个[图标](./file/icon\terminal.ico)，放到一个指定的目录下， 如 "C:\win10\icon\terminal.ico"
 
@@ -149,6 +149,6 @@ Windows Registry Editor Version 5.00
 
 
 # 参考
-* https://docs.microsoft.com/zh-cn/windows/terminal/
-* https://github.com/JanDeDobbeleer/oh-my-posh#themes
-* https://blog.csdn.net/u010263423/article/details/107715219
+* [官方文档](https://docs.microsoft.com/zh-cn/windows/terminal/)
+* [oh-my-posh themes](https://github.com/JanDeDobbeleer/oh-my-posh#themes)
+* [改变 powershell 的执行策略](https://blog.csdn.net/u010263423/article/details/107715219)
